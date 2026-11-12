@@ -12,17 +12,18 @@ int main(void) {
     do {
         Specialisation all[SPECIALISATION_COUNT] = {0};
         
-        if (!input_data(all, SPECIALISATION_COUNT)) { break; }
+        int direction_count = input_data(all, SPECIALISATION_COUNT);
+        if (direction_count == 0) { break; }
 
         printf("\nНАПРАВЛЕНИЯ\n");
-        for (int i = 0; i < SPECIALISATION_COUNT; i++) {
+        for (int i = 0; i < direction_count; i++) {
             Specialisation *spec = all + i;
             printf("%2d - %s\n", i + 1, spec -> name);
         }
 
         printf("\nСТАТИСТИКА ПО НАПРАВЛЕНИЯМ\n\n");
         printf("| Напр. | Без льгот  | С льготами | Минимум    | Максимум   | ОК   | ОтК  | ЦП   | БВИ  | Русский    | Математика | Физика     | Информат.  |\n");
-        for (int i = 0; i < SPECIALISATION_COUNT; i++) {
+        for (int i = 0; i < direction_count; i++) {
             Statistics result;
             calculate(all + i, &result);
 
@@ -41,6 +42,22 @@ int main(void) {
             print_score(result.phys_average, 2);
             print_score(result.inf_average, 2);
             printf("\n");
+        }
+
+        /* Только режим 3 возвращает одно направление. */
+        if (direction_count == 1) {
+            Specialisation *spec = all;
+            printf("\nСТУДЕНТЫ ПРОВЕРОЧНОГО ПРИМЕРА\n");
+            printf("| N | Рус | Мат | Физ | Инф | Льгота | ФИО\n");
+            for (int i = 0; i < spec -> count; i++) {
+                Guy *student = spec -> massive + i;
+                printf("| %d | %3d | %3d | %3d | %3d | %6d | %s %s %s\n",
+                    i + 1, student -> rus, student -> math, student -> phys,
+                    student -> inf, (int)student -> benefit,
+                    student -> surname, student -> name, student -> patronymic);
+            }
+            printf("Льготы: %d - нет, %d - особая квота, %d - БВИ.\n",
+                BENEFIT_NONE, BENEFIT_SPECIAL_QUOTA, BENEFIT_BVI);
         }
     }
     while (repeat_work());

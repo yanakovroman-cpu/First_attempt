@@ -124,9 +124,10 @@ static int choose_mode(void) {
     printf("\nВыберите режим:\n");
     printf("1 - Автоматическое заполнение\n");
     printf("2 - Ручной ввод\n");
+    printf("3 - Проверочный пример (4 студента)\n");
     printf("0 - Выход\n");
 
-    if (!read_range("Ваш выбор", 0, 2, &mode)) { return 0; }
+    if (!read_range("Ваш выбор", 0, 3, &mode)) { return 0; }
 
     return mode;
 }
@@ -264,18 +265,38 @@ int repeat_work(void) {
     return repeat;
 }
 
+static void example_students(Specialisation *spec) {
+    *spec = (Specialisation) {
+        .name = "Программная инженерия (проверочный пример)",
+        .count = 4,
+        .massive = {
+            {.name = "Иван", .surname = "Иванов", .patronymic = "Иванович",
+             .rus = 40, .math = 40, .inf = 60, .phys = 50, .benefit = BENEFIT_NONE},
+            {.name = "Пётр", .surname = "Петров", .patronymic = "Петрович",
+             .rus = 60, .math = 60, .inf = 50, .phys = 80, .benefit = BENEFIT_NONE},
+            {.name = "Анна", .surname = "Иванова", .patronymic = "Ивановна",
+             .rus = 80, .math = 80, .inf = 100, .phys = 90, .benefit = BENEFIT_SPECIAL_QUOTA},
+            {.name = "Ольга", .surname = "Петрова", .patronymic = "Петровна",
+             .rus = 100, .math = 100, .inf = 70, .phys = 60, .benefit = BENEFIT_BVI}
+        }
+    };
+}
+
 int input_data(Specialisation *spec, int n) {
     if (spec == NULL || n < 1 || n > SPECIALISATION_COUNT) { return 0; }
 
     switch (choose_mode()) {
         case 1:
             random_specialisations(spec, n);
-            return 1;
+            return n;
         case 2:
             if (!specialisations(spec, n)) {
                 printf("Ввод прекращён. Незавершённый набор не обрабатывается.\n");
                 return 0;
             }
+            return n;
+        case 3:
+            example_students(spec);
             return 1;
         default:
             return 0;

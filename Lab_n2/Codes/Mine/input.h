@@ -38,6 +38,7 @@ typedef struct {
 } Specialisation;
 
 int repeat_work(void);
+/* Число заполненных направлений; 0 при выходе или прекращении ввода. */
 int input_data(Specialisation *spec, int n);
 
 #endif
