@@ -154,10 +154,10 @@ static void random_students(Specialisation *spec, char *n) {
     spec -> count = c;
     for (int i = 0; i < c; i++) {
         Guy *student = spec -> massive + i;
-        student -> rus = MIN_RUS_SCORE + rand() % (MAX_SCORE - MIN_RUS_SCORE + 1);
-        student -> math = MIN_MATH_SCORE + rand() % (MAX_SCORE - MIN_MATH_SCORE + 1);
-        student -> inf = MIN_INF_SCORE + rand() % (MAX_SCORE - MIN_INF_SCORE + 1);
-        student -> phys = MIN_PHYS_SCORE + rand() % (MAX_SCORE - MIN_PHYS_SCORE + 1);
+        student -> rus = MIN_SCORE + rand() % (MAX_SCORE - MIN_SCORE + 1);
+        student -> math = MIN_SCORE + rand() % (MAX_SCORE - MIN_SCORE + 1);
+        student -> inf = MIN_SCORE + rand() % (MAX_SCORE - MIN_SCORE + 1);
+        student -> phys = MIN_SCORE + rand() % (MAX_SCORE - MIN_SCORE + 1);
         student -> benefit = (Benefit) (rand() % BENEFIT_COUNT);
         snprintf(student -> name, sizeof(student -> name), "%s", names[rand() % NAME_VARIANTS_COUNT]);
         snprintf(student -> surname, sizeof(student -> surname), "%s", surnames[rand() % NAME_VARIANTS_COUNT]);
@@ -206,13 +206,13 @@ static int students(Specialisation *spec, char *n) {
         printf("Отчество:\n");
         if (!write_str(student -> patronymic, sizeof(student -> patronymic))) { return 0; }
 
-        if (!read_range("Русский язык", MIN_RUS_SCORE, MAX_SCORE, &student -> rus)) { return 0; }
+        if (!read_range("Русский язык", MIN_SCORE, MAX_SCORE, &student -> rus)) { return 0; }
 
-        if (!read_range("Математика", MIN_MATH_SCORE, MAX_SCORE, &student -> math)) { return 0; }
+        if (!read_range("Математика", MIN_SCORE, MAX_SCORE, &student -> math)) { return 0; }
 
-        if (!read_range("Физика", MIN_PHYS_SCORE, MAX_SCORE, &student -> phys)) { return 0; }
+        if (!read_range("Физика", MIN_SCORE, MAX_SCORE, &student -> phys)) { return 0; }
 
-        if (!read_range("Информатика", MIN_INF_SCORE, MAX_SCORE, &student -> inf)) { return 0; }
+        if (!read_range("Информатика", MIN_SCORE, MAX_SCORE, &student -> inf)) { return 0; }
 
         printf(
             "Льгота:\n"
