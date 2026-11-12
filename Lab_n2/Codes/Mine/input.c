@@ -4,7 +4,7 @@
 #include <errno.h>
 #include <limits.h>
 
-int write_str(char *out, int size) {
+static int write_str(char *out, int size) {
     if (out == NULL || size < 2) { return 0; }
 
     for (;;) {
@@ -28,7 +28,7 @@ int write_str(char *out, int size) {
 
                 if (ch == '\n') { finished = 1; break; }
 
-                if ((ch < 32 && ch != '\t' && ch != '\r') || ch == 127) { invalid = 1; }
+                if ((ch < 32 && ch != '\t') || ch == 127) { invalid = 1; }
 
                 if (length < size - 1) {
                     *(out + length) = (char) ch;
@@ -51,7 +51,7 @@ int write_str(char *out, int size) {
         int written = 0, space = 0;
         for (int i = 0; i < length; i++) {
             char ch = *(out + i);
-            if (ch == ' ' || ch == '\t' || ch == '\r') {
+            if (ch == ' ' || ch == '\t') {
                 
                 if (written > 0) { space = 1; }
                 
@@ -77,7 +77,7 @@ int write_str(char *out, int size) {
     }
 }
 
-int write_num(int *out) {
+static int write_num(int *out) {
     
     if (out == NULL) { return 0; }
 
@@ -106,7 +106,7 @@ int write_num(int *out) {
     }
 }
 
-static int read_range(const char *text, int min, int max, int *out) {
+static int read_range(char *text, int min, int max, int *out) {
     for (;;) {
         printf("%s (%d–%d):\n", text, min, max);
 
@@ -118,7 +118,7 @@ static int read_range(const char *text, int min, int max, int *out) {
     }
 }
 
-int choose_mode(void) {
+static int choose_mode(void) {
     int mode;
 
     printf("\nВыберите режим:\n");
@@ -131,20 +131,20 @@ int choose_mode(void) {
     return mode;
 }
 
-void random_students(Specialisation *spec, const char *n) {
+static void random_students(Specialisation *spec, char *n) {
     if (spec == NULL || n == NULL) { return; }
     snprintf(spec -> name, sizeof(spec -> name), "%s", n);
-    const char *names[] = {
+    char *names[] = {
         "Александр", "Дмитрий", "Максим", "Иван", "Артём",
         "Михаил", "Даниил", "Кирилл", "Андрей", "Роман"
     };
 
-    const char *surnames[] = {
+    char *surnames[] = {
         "Иванов", "Петров", "Смирнов", "Кузнецов", "Попов",
         "Соколов", "Лебедев", "Козлов", "Новиков", "Морозов"
     };
 
-    const char *patronymics[] = {
+    char *patronymics[] = {
         "Александрович", "Дмитриевич", "Максимович", "Иванович", "Артёмович",
         "Михайлович", "Даниилович", "Кириллович", "Андреевич", "Романович"
     };
@@ -164,9 +164,9 @@ void random_students(Specialisation *spec, const char *n) {
     }
 }
 
-void random_specialisations(Specialisation *spec, int n) {
+static void random_specialisations(Specialisation *spec, int n) {
     if (spec == NULL || n < 1 || n > SPECIALISATION_COUNT) { return; }
-    const char *specialisation_names[] = {
+    char *specialisation_names[] = {
         "Автоматизация технологических процессов и производств",
         "Информатика и вычислительная техника",
         "Информационная безопасность",
@@ -181,7 +181,7 @@ void random_specialisations(Specialisation *spec, int n) {
     for (int i = 0; i < n; i++) { random_students(spec + i, specialisation_names[i]); }
 }
 
-int students(Specialisation *spec, const char *n) {
+static int students(Specialisation *spec, char *n) {
     if (spec == NULL || n == NULL) { return 0; }
 
     snprintf(spec -> name, sizeof(spec -> name), "%s", n);
@@ -232,9 +232,9 @@ int students(Specialisation *spec, const char *n) {
     return 1;
 }
 
-int specialisations(Specialisation *spec, int n) {
+static int specialisations(Specialisation *spec, int n) {
     if (spec == NULL || n < 1 || n > SPECIALISATION_COUNT) { return 0; }
-    const char *specialisation_names[] = {
+    char *specialisation_names[] = {
         "Автоматизация технологических процессов и производств",
         "Информатика и вычислительная техника",
         "Информационная безопасность",

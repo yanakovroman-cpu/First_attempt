@@ -1,14 +1,14 @@
 #include "stats.h"
 #include <stdio.h>
 
-static double average_with(const Specialisation *spec) {
+static double average_with(Specialisation *spec) {
     double average;
     int count = spec -> count, sum = 0;
 
     if (count == 0) { return NO_DATA; }
 
     for (int i = 0; i < count; i++) {
-        const Guy *student = spec -> massive + i;
+        Guy *student = spec -> massive + i;
 
         if (student -> benefit == BENEFIT_BVI) { sum = sum + BVI_SCORE; continue; }
 
@@ -20,12 +20,12 @@ static double average_with(const Specialisation *spec) {
     return average;
 }
 
-static double average_without(const Specialisation *spec) {
+static double average_without(Specialisation *spec) {
     double average;
     int count = spec -> count, included = 0, sum = 0;
 
     for (int i = 0; i < count; i++) {
-        const Guy *student = spec -> massive + i;
+        Guy *student = spec -> massive + i;
 
         if (student -> benefit != BENEFIT_NONE) { continue; }
 
@@ -40,13 +40,13 @@ static double average_without(const Specialisation *spec) {
     return average;
 }
 
-static int min_score(const Specialisation *spec) {
+static int min_score(Specialisation *spec) {
     int mn = MAX_TOTAL_SCORE, count = spec -> count, k;
 
     if (count == 0) { return NO_DATA; }
 
     for (int i = 0; i < count; i++) {
-        const Guy *student = spec -> massive + i;
+        Guy *student = spec -> massive + i;
         int third_score = (student -> inf > student -> phys) ? student -> inf : student -> phys;
         k = student -> rus + student -> math + third_score;
         mn = (mn < k) ? mn : k;
@@ -55,13 +55,13 @@ static int min_score(const Specialisation *spec) {
     return mn;
 }
 
-static int max_score(const Specialisation *spec) {
+static int max_score(Specialisation *spec) {
     int mx = MIN_SCORE, count = spec -> count, k;
 
     if (count == 0) { return NO_DATA; }
 
     for (int i = 0; i < count; i++) {
-        const Guy *student = spec -> massive + i;
+        Guy *student = spec -> massive + i;
         int third_score = (student -> inf > student -> phys) ? student -> inf : student -> phys;
         k = student -> rus + student -> math + third_score;
         mx = (mx < k) ? k : mx;
@@ -70,11 +70,11 @@ static int max_score(const Specialisation *spec) {
     return mx;
 }
 
-static int benefit_count(const Specialisation *spec, Benefit benefit) {
+static int benefit_count(Specialisation *spec, Benefit benefit) {
     int count = spec -> count, k = 0;
 
     for (int i = 0; i < count; i++) {
-        const Guy *student = spec -> massive + i;
+        Guy *student = spec -> massive + i;
 
         if (student -> benefit == benefit) { k++; }
     }
@@ -82,7 +82,7 @@ static int benefit_count(const Specialisation *spec, Benefit benefit) {
     return k;
 }
 
-static double rus_average(const Specialisation *spec) {
+static double rus_average(Specialisation *spec) {
     int count = spec -> count, k = 0;
     double average;
 
@@ -90,7 +90,7 @@ static double rus_average(const Specialisation *spec) {
 
 
     for (int i = 0; i < count; i++) {
-        const Guy *student = spec -> massive + i;
+        Guy *student = spec -> massive + i;
         k += student -> rus;
     }
 
@@ -98,7 +98,7 @@ static double rus_average(const Specialisation *spec) {
     return average;
 }
 
-static double math_average(const Specialisation *spec) {
+static double math_average(Specialisation *spec) {
     int count = spec -> count, k = 0;
     double average;
 
@@ -106,7 +106,7 @@ static double math_average(const Specialisation *spec) {
 
 
     for (int i = 0; i < count; i++) {
-        const Guy *student = spec -> massive + i;
+        Guy *student = spec -> massive + i;
         k += student -> math;
     }
 
@@ -114,7 +114,7 @@ static double math_average(const Specialisation *spec) {
     return average;
 }
 
-static double inf_average(const Specialisation *spec) {
+static double inf_average(Specialisation *spec) {
     int count = spec -> count, k = 0;
     double average;
 
@@ -122,7 +122,7 @@ static double inf_average(const Specialisation *spec) {
 
 
     for (int i = 0; i < count; i++) {
-        const Guy *student = spec -> massive + i;
+        Guy *student = spec -> massive + i;
         k += student -> inf;
     }
 
@@ -130,14 +130,14 @@ static double inf_average(const Specialisation *spec) {
     return average;
 }
 
-static double phys_average(const Specialisation *spec) {
+static double phys_average(Specialisation *spec) {
     int count = spec -> count, k = 0;
     double average;
 
     if (count == 0) { return NO_DATA; }
 
     for (int i = 0; i < count; i++) {
-        const Guy *student = spec -> massive + i;
+        Guy *student = spec -> massive + i;
         k += student -> phys;
     }
 
@@ -145,29 +145,19 @@ static double phys_average(const Specialisation *spec) {
     return average;
 }
 
-void calculate(const Specialisation *spec, Statistics *result) {
+void calculate(Specialisation *spec, Statistics *result) {
 
     if (result == NULL) { return; }
 
     if (spec == NULL || spec -> count < 0 || spec -> count > MAX_STUDENTS) { return; }
     
-    *result = (Statistics){
+    *result = (Statistics) {
         .average_with = NO_DATA, .average_without = NO_DATA,
         .min_score = NO_DATA, .max_score = NO_DATA,
         .rus_average = NO_DATA, .math_average = NO_DATA,
         .inf_average = NO_DATA, .phys_average = NO_DATA
     };
     
-    for (int i = 0; i < spec -> count; i++) {
-        const Guy *student = spec -> massive + i;
-    
-        if (student -> rus < MIN_RUS_SCORE || student -> rus > MAX_SCORE ||
-            student -> math < MIN_MATH_SCORE || student -> math > MAX_SCORE ||
-            student -> phys < MIN_PHYS_SCORE || student -> phys > MAX_SCORE ||
-            student -> inf < MIN_INF_SCORE || student -> inf > MAX_SCORE ||
-            student -> benefit < BENEFIT_NONE || student -> benefit >= BENEFIT_COUNT) { return; }
-    }
-
     result -> average_with = average_with(spec);
     result -> average_without = average_without(spec);
     result -> min_score = min_score(spec);

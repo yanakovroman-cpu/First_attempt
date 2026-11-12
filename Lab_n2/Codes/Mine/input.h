@@ -6,7 +6,7 @@
 #define MIN_RUS_SCORE 40
 #define MIN_MATH_SCORE 40
 #define MIN_INF_SCORE 46
-#define MIN_PHYS_SCORE 41
+#define MIN_PHYS_SCORE 41 
 #define MIN_STUDENTS 11
 #define MAX_STUDENTS 99
 #define STUDENT_CAPACITY 100
@@ -37,13 +37,6 @@ typedef struct {
     Guy massive[STUDENT_CAPACITY];
 } Specialisation;
 
-int write_str(char *out, int size);
-int write_num(int *out);
-void random_students(Specialisation *spec, const char *n);
-void random_specialisations(Specialisation *spec, int n);
-int students(Specialisation *spec, const char *n);
-int specialisations(Specialisation *spec, int n);
-int choose_mode(void);
 int repeat_work(void);
 int input_data(Specialisation *spec, int n);
 

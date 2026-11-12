@@ -22,7 +22,7 @@ typedef struct {
     double phys_average;
 } Statistics;
 
-void calculate(const Specialisation *spec, Statistics *result);
+void calculate(Specialisation *spec, Statistics *result);
 void print_score(double value, int precision);
 
 #endif

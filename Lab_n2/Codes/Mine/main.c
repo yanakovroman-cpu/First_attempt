@@ -7,7 +7,7 @@
 
 int main(void) {
     setlocale(LC_ALL, "ru_RU.UTF-8");
-    srand(time(NULL));
+    srand((unsigned char) time(NULL));
 
     do {
         Specialisation all[SPECIALISATION_COUNT] = {0};
@@ -16,7 +16,7 @@ int main(void) {
 
         printf("\nНАПРАВЛЕНИЯ\n");
         for (int i = 0; i < SPECIALISATION_COUNT; i++) {
-            const Specialisation *spec = all + i;
+            Specialisation *spec = all + i;
             printf("%2d - %s\n", i + 1, spec -> name);
         }
 
