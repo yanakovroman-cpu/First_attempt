@@ -90,3 +90,57 @@
 //     printf("Площадь: %d\n", ar);
 //     return 0;
 // }
+
+typedef struct {
+    int *data;
+    size_t size;
+    size_t capacity;
+} vector;
+
+int push_vector(vector *a, int new_el) {
+    if (a -> size< a -> capacity) {
+        (a -> data)[a -> size] = new_el;
+        a -> size ++;
+    }
+    else {
+        int *k = (int *) realloc(a -> data, a -> capacity == 0 ? 2 * sizeof(int) : a -> capacity * 2 * sizeof(int));
+        a -> capacity = a -> capacity == 0 ? 2 : a -> capacity * 2;
+        if (k == NULL) {
+            return -1;
+        }
+        a -> data = k;
+        (a -> data)[a -> size] = new_el;
+        a -> size ++;
+    }
+}
+
+int free_vector(vector *a) {
+    free(a -> data);
+    a -> size = 0;
+    a -> capacity = 0;
+    return 0;
+}
+
+void main(void) {
+    setlocale(LC_ALL, "ru_RU.UTF-8");
+    vector a = {NULL, 0, 0};
+    if (push_vector(&a, 5) == -1) {
+        puts("Ошибка\n");
+    }
+    else {
+        printf("%zu %zu %d", a.size, a.capacity, *(a.data));
+    }
+    if (push_vector(&a, 10) == -1) {
+        puts("Ошибка\n");
+    }
+    else {
+        printf("%zu %zu %d", a.size, a.capacity, *(a.data));
+    }
+    if (push_vector(&a, 20) == -1) {
+        puts("Ошибка\n");
+    }
+    else {
+        printf("%zu %zu %d", a.size, a.capacity, *(a.data));
+    }
+    return 0;
+}

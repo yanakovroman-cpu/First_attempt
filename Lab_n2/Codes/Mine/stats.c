@@ -5,15 +5,13 @@ static double average_with(Specialisation *spec) {
     double average;
     int count = spec -> count, sum = 0;
 
-    if (count == 0) { return NO_DATA; }
-
     for (int i = 0; i < count; i++) {
         Guy *student = spec -> massive + i;
 
-        if (student -> benefit == BENEFIT_BVI) { sum = sum + BVI_SCORE; continue; }
+        if (student -> benefit == BENEFIT_BVI) { sum = sum + BVI_SCORE / 3; continue; }
 
         int third_score = (student -> inf > student -> phys) ? student -> inf : student -> phys;
-        sum += student -> rus + student -> math + third_score;
+        sum += (student -> rus + student -> math + third_score) / 3.0;
     }
 
     average = (double) sum / count;
@@ -30,7 +28,7 @@ static double average_without(Specialisation *spec) {
         if (student -> benefit != BENEFIT_NONE) { continue; }
 
         int third_score = (student -> inf > student -> phys) ? student -> inf : student -> phys;
-        sum += student -> rus + student -> math + third_score;
+        sum += (student -> rus + student -> math + third_score) / 3.0;
         included++;
     }
 
@@ -42,8 +40,6 @@ static double average_without(Specialisation *spec) {
 
 static int min_score(Specialisation *spec) {
     int mn = MAX_TOTAL_SCORE, count = spec -> count, k;
-
-    if (count == 0) { return NO_DATA; }
 
     for (int i = 0; i < count; i++) {
         Guy *student = spec -> massive + i;
@@ -57,8 +53,6 @@ static int min_score(Specialisation *spec) {
 
 static int max_score(Specialisation *spec) {
     int mx = MIN_SCORE, count = spec -> count, k;
-
-    if (count == 0) { return NO_DATA; }
 
     for (int i = 0; i < count; i++) {
         Guy *student = spec -> massive + i;
@@ -86,8 +80,6 @@ static double rus_average(Specialisation *spec) {
     int count = spec -> count, k = 0;
     double average;
 
-    if (count == 0) { return NO_DATA; }
-
 
     for (int i = 0; i < count; i++) {
         Guy *student = spec -> massive + i;
@@ -101,8 +93,6 @@ static double rus_average(Specialisation *spec) {
 static double math_average(Specialisation *spec) {
     int count = spec -> count, k = 0;
     double average;
-
-    if (count == 0) { return NO_DATA; }
 
 
     for (int i = 0; i < count; i++) {
@@ -118,8 +108,6 @@ static double inf_average(Specialisation *spec) {
     int count = spec -> count, k = 0;
     double average;
 
-    if (count == 0) { return NO_DATA; }
-
 
     for (int i = 0; i < count; i++) {
         Guy *student = spec -> massive + i;
@@ -134,8 +122,6 @@ static double phys_average(Specialisation *spec) {
     int count = spec -> count, k = 0;
     double average;
 
-    if (count == 0) { return NO_DATA; }
-
     for (int i = 0; i < count; i++) {
         Guy *student = spec -> massive + i;
         k += student -> phys;
@@ -149,14 +135,14 @@ void calculate(Specialisation *spec, Statistics *result) {
 
     if (result == NULL) { return; }
 
-    if (spec == NULL || spec -> count < 0 || spec -> count > MAX_STUDENTS) { return; }
-    
     *result = (Statistics) {
         .average_with = NO_DATA, .average_without = NO_DATA,
         .min_score = NO_DATA, .max_score = NO_DATA,
         .rus_average = NO_DATA, .math_average = NO_DATA,
         .inf_average = NO_DATA, .phys_average = NO_DATA
     };
+
+    if (spec == NULL || spec -> count <= 0 || spec -> count > MAX_STUDENTS) { return; }
     
     result -> average_with = average_with(spec);
     result -> average_without = average_without(spec);
@@ -174,7 +160,7 @@ void calculate(Specialisation *spec, Statistics *result) {
 
 void print_score(double value, int precision) {
 
-    if (value < 0) { printf("Нет данных | "); }
+    if (value < 0) { printf("Нет данных  | "); }
 
     else { printf("%10.*f | ", precision, value); }
 }

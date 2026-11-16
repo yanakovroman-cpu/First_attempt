@@ -7,7 +7,7 @@
 
 int main(void) {
     setlocale(LC_ALL, "ru_RU.UTF-8");
-    srand((unsigned char) time(NULL));
+    srand(time(NULL));
 
     do {
         Specialisation all[SPECIALISATION_COUNT] = {0};
@@ -22,7 +22,7 @@ int main(void) {
         }
 
         printf("\nСТАТИСТИКА ПО НАПРАВЛЕНИЯМ\n\n");
-        printf("| Напр. | Без льгот  | С льготами | Минимум    | Максимум   | ОК   | ОтК  | ЦП   | БВИ  | Русский    | Математика | Физика     | Информат.  |\n");
+        printf("| Напр. |  Без льгот | С льготами |    Минимум |   Максимум |   ОК |  ОтК |   ЦП |  БВИ |    Русский | Математика |     Физика |  Информат. |\n");
         for (int i = 0; i < direction_count; i++) {
             Statistics result;
             calculate(all + i, &result);
@@ -44,7 +44,6 @@ int main(void) {
             printf("\n");
         }
 
-        /* Только режим 3 возвращает одно направление. */
         if (direction_count == 1) {
             Specialisation *spec = all;
             printf("\nСТУДЕНТЫ ПРОВЕРОЧНОГО ПРИМЕРА\n");
@@ -53,7 +52,7 @@ int main(void) {
                 Guy *student = spec -> massive + i;
                 printf("| %d | %3d | %3d | %3d | %3d | %6d | %s %s %s\n",
                     i + 1, student -> rus, student -> math, student -> phys,
-                    student -> inf, (int)student -> benefit,
+                    student -> inf, student -> benefit,
                     student -> surname, student -> name, student -> patronymic);
             }
             printf("Льготы: %d - нет, %d - особая квота, %d - БВИ.\n",

@@ -5,7 +5,6 @@
 #include <limits.h>
 
 static int write_str(char *out, int size) {
-    if (out == NULL || size < 2) { return 0; }
 
     for (;;) {
         int length = 0, invalid = 0, finished = 0;
@@ -15,7 +14,7 @@ static int write_str(char *out, int size) {
 
             if (fgets(part, sizeof(part), stdin) == NULL) {
 
-                if (length == 0 && !invalid) { return 0; }
+                if (length == 0) { return 0; }
 
                 break;
             }
@@ -24,11 +23,11 @@ static int write_str(char *out, int size) {
             while (*(part + count) != '\0') { count++; }
 
             for (int i = 0; i < count; i++) {
-                unsigned char ch = (unsigned char) *(part + i);
+                unsigned char ch = *(part + i);
 
                 if (ch == '\n') { finished = 1; break; }
 
-                if ((ch < 32 && ch != '\t') || ch == 127) { invalid = 1; }
+                if (ch < MIN_PRINTABLE_CHAR && ch != '\t') { invalid = 1; }
 
                 if (length < size - 1) {
                     *(out + length) = (char) ch;
@@ -79,7 +78,6 @@ static int write_str(char *out, int size) {
 
 static int write_num(int *out) {
     
-    if (out == NULL) { return 0; }
 
     char line[INPUT_BUFFER_SIZE];
 
@@ -91,7 +89,7 @@ static int write_num(int *out) {
         errno = 0;
         long value = strtol(line, &end, 10);
 
-        if (end == line || *end != '\0') {
+        if (*end != '\0') {
             printf("Введите целое число без лишних символов.\n");
             continue;
         }
@@ -133,7 +131,6 @@ static int choose_mode(void) {
 }
 
 static void random_students(Specialisation *spec, char *n) {
-    if (spec == NULL || n == NULL) { return; }
     snprintf(spec -> name, sizeof(spec -> name), "%s", n);
     char *names[] = {
         "Александр", "Дмитрий", "Максим", "Иван", "Артём",
@@ -154,10 +151,10 @@ static void random_students(Specialisation *spec, char *n) {
     spec -> count = c;
     for (int i = 0; i < c; i++) {
         Guy *student = spec -> massive + i;
-        student -> rus = MIN_SCORE + rand() % (MAX_SCORE - MIN_SCORE + 1);
-        student -> math = MIN_SCORE + rand() % (MAX_SCORE - MIN_SCORE + 1);
-        student -> inf = MIN_SCORE + rand() % (MAX_SCORE - MIN_SCORE + 1);
-        student -> phys = MIN_SCORE + rand() % (MAX_SCORE - MIN_SCORE + 1);
+        student -> rus = MIN_RUS_SCORE + rand() % (MAX_SCORE - MIN_RUS_SCORE + 1);
+        student -> math = MIN_MATH_SCORE + rand() % (MAX_SCORE - MIN_MATH_SCORE + 1);
+        student -> inf = MIN_INF_SCORE + rand() % (MAX_SCORE - MIN_INF_SCORE + 1);
+        student -> phys = MIN_PHYS_SCORE + rand() % (MAX_SCORE - MIN_PHYS_SCORE + 1);
         student -> benefit = (Benefit) (rand() % BENEFIT_COUNT);
         snprintf(student -> name, sizeof(student -> name), "%s", names[rand() % NAME_VARIANTS_COUNT]);
         snprintf(student -> surname, sizeof(student -> surname), "%s", surnames[rand() % NAME_VARIANTS_COUNT]);
@@ -166,7 +163,6 @@ static void random_students(Specialisation *spec, char *n) {
 }
 
 static void random_specialisations(Specialisation *spec, int n) {
-    if (spec == NULL || n < 1 || n > SPECIALISATION_COUNT) { return; }
     char *specialisation_names[] = {
         "Автоматизация технологических процессов и производств",
         "Информатика и вычислительная техника",
@@ -183,7 +179,6 @@ static void random_specialisations(Specialisation *spec, int n) {
 }
 
 static int students(Specialisation *spec, char *n) {
-    if (spec == NULL || n == NULL) { return 0; }
 
     snprintf(spec -> name, sizeof(spec -> name), "%s", n);
     spec -> count = 0;
@@ -206,13 +201,13 @@ static int students(Specialisation *spec, char *n) {
         printf("Отчество:\n");
         if (!write_str(student -> patronymic, sizeof(student -> patronymic))) { return 0; }
 
-        if (!read_range("Русский язык", MIN_SCORE, MAX_SCORE, &student -> rus)) { return 0; }
+        if (!read_range("Русский язык", MIN_RUS_SCORE, MAX_SCORE, &student -> rus)) { return 0; }
 
-        if (!read_range("Математика", MIN_SCORE, MAX_SCORE, &student -> math)) { return 0; }
+        if (!read_range("Математика", MIN_MATH_SCORE, MAX_SCORE, &student -> math)) { return 0; }
 
-        if (!read_range("Физика", MIN_SCORE, MAX_SCORE, &student -> phys)) { return 0; }
+        if (!read_range("Физика", MIN_PHYS_SCORE, MAX_SCORE, &student -> phys)) { return 0; }
 
-        if (!read_range("Информатика", MIN_SCORE, MAX_SCORE, &student -> inf)) { return 0; }
+        if (!read_range("Информатика", MIN_INF_SCORE, MAX_SCORE, &student -> inf)) { return 0; }
 
         printf(
             "Льгота:\n"
@@ -234,7 +229,6 @@ static int students(Specialisation *spec, char *n) {
 }
 
 static int specialisations(Specialisation *spec, int n) {
-    if (spec == NULL || n < 1 || n > SPECIALISATION_COUNT) { return 0; }
     char *specialisation_names[] = {
         "Автоматизация технологических процессов и производств",
         "Информатика и вычислительная техника",
@@ -267,7 +261,7 @@ int repeat_work(void) {
 
 static void example_students(Specialisation *spec) {
     *spec = (Specialisation) {
-        .name = "Программная инженерия (проверочный пример)",
+        .name = "Программная инженерия",
         .count = 4,
         .massive = {
             {.name = "Иван", .surname = "Иванов", .patronymic = "Иванович",

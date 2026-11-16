@@ -3,6 +3,10 @@
 
 #define MIN_SCORE 0
 #define MAX_SCORE 100
+#define MIN_RUS_SCORE 40
+#define MIN_MATH_SCORE 40
+#define MIN_INF_SCORE 46
+#define MIN_PHYS_SCORE 41
 #define MIN_STUDENTS 11
 #define MAX_STUDENTS 99
 #define STUDENT_CAPACITY 100
@@ -11,6 +15,7 @@
 #define NAME_VARIANTS_COUNT 10
 #define SPECIALISATION_NAME_SIZE 128
 #define INPUT_BUFFER_SIZE 128
+#define MIN_PRINTABLE_CHAR 32
 
 typedef enum {
     BENEFIT_NONE,
@@ -34,7 +39,6 @@ typedef struct {
 } Specialisation;
 
 int repeat_work(void);
-/* Число заполненных направлений; 0 при выходе или прекращении ввода. */
 int input_data(Specialisation *spec, int n);
 
 #endif
